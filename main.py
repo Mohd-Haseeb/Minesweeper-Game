@@ -46,6 +46,7 @@ center_frame = Frame(
 center_frame.place(x=utils.widtht_prcnt(25),y=utils.height_prcnt(25))
 
 
+
 # btn = Button(center_frame, text = 'click')
 # btn.place(x=0,y=0)
 
