@@ -57,10 +57,20 @@ for x in range(settings.GRID_SIZE):
         c.cell_btn_object.grid(column=x, row=y)
 
 
+
+Cell.create_cell_count_label(left_frame)
+Cell.cell_count_label_obj.place(
+    x=0, y=0
+)
+
+
 Cell.randomize_mines()
 
 print(Cell.all)
 for mine in Cell.all:
     print(mine.is_mine)
+
+
+
 # run the window
 root.mainloop()
