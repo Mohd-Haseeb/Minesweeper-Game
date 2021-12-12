@@ -3,6 +3,8 @@ from tkinter import  Button, Label
 import random
 from tkinter.constants import S
 import settings
+import ctypes
+import sys
 
 class Cell:
     all =[]
@@ -13,6 +15,7 @@ class Cell:
         self.x = x
         self.y = y
         self.is_opened = False
+        self.is_mine_candidate = False
         self.cell_btn_object = None
 
         Cell.all.append(self)
@@ -63,11 +66,22 @@ class Cell:
         print("Left Clicked!!")
         if self.is_mine:
             self.cell_btn_object.configure(bg='red')
+            ctypes.windll.user32.MessageBoxW(0,'You clicked on a mine', 'Game Over', 0)
+            sys.exit()
         else:
             self.show_cell()
             if self.get_surrounding_mines == 0:
                 for cell_obj in self.surrounded_cells:
                     cell_obj.show_cell()
+            
+            # If mines count is equal to cells left count, then the player won the game
+            if settings.MINES_COUNT == Cell.cell_count:            
+                ctypes.windll.user32.MessageBoxW(0,'YOU WON THE GAME', 'Game Over', 0)
+
+
+        # Cancel left and right click events if button is already opened/ already clicked
+        self.cell_btn_object.unbind('<Button-1>')
+        self.cell_btn_object.unbind('<Button-3>')
 
     def get_cell_by_axis(self,x,y):
         for cell in Cell.all:
@@ -110,6 +124,9 @@ class Cell:
                 Cell.cell_count_label_obj.configure(
                     text=f"Cells Left:{Cell.cell_count}"
                 )
+            
+            if self.is_mine_candidate:
+                self.cell_btn_object.configure(bg='SystemButtonFace')
         
         self.is_opened = True
 
@@ -118,3 +135,9 @@ class Cell:
     def right_click_actions(self, event):
         print(event)
         print("right Clicked!!")
+        if not self.is_mine_candidate:
+            self.cell_btn_object.configure(bg='orange')
+            self.is_mine_candidate = True
+        else:
+            self.cell_btn_object.configure(bg='SystemButtonFace')
+            self.is_mine_candidate = False
